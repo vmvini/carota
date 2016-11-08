@@ -76,6 +76,7 @@ var handlers = [
     tag('I', 'italic'),
     tag('EM', 'italic'),
     tag('U', 'underline'),
+    tag('H', 'highlight'),
     tag('S', 'strikeout'),
     tag('STRIKE', 'strikeout'),
     tag('DEL', 'strikeout'),
@@ -83,6 +84,7 @@ var handlers = [
     styleFlag('fontStyle', 'italic', 'italic'),
     styleFlag('textDecoration', 'underline', 'underline'),
     styleFlag('textDecoration', 'line-through', 'strikeout'),
+    styleFlag('textDecoration', 'highlight', 'highlight'),
     styleValue('color', 'color'),
     styleValue('fontFamily', 'font', fontName),
     styleValue('fontSize', 'size', function(size) {
@@ -192,4 +194,3 @@ exports.parse = function(html, classes) {
     recurse(root, {});
     return result;
 };
-

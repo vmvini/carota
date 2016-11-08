@@ -158,4 +158,15 @@ exports.draw = function(ctx, str, formatting, left, baseline, width, ascent, des
     if (formatting.strikeout) {
         ctx.fillRect(left, 1 + baseline - (ascent/2), width, 1);
     }
+    if (formatting.highlight) {
+        ctx.save();
+        ctx.fillStyle="#EDDE40";
+        ctx.globalAlpha=0.8;
+        ctx.fillRect(left, 1 + baseline - (ascent), width, textHeight(str, formatting));
+        ctx.restore();
+    }
 };
+
+function textHeight(str, formatting){
+  return exports.measure(str, formatting).height;
+}

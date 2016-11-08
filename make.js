@@ -1,5 +1,6 @@
 var webmake = require('webmake');
 var minify = require('node-minify');
+var compressor = require("node-minify");
 
 webmake('src/carota.js', { output: 'carota-debug.js' }, function(result) {
     if (!result) {
@@ -8,8 +9,8 @@ webmake('src/carota.js', { output: 'carota-debug.js' }, function(result) {
         console.log(result);
     }
 });
-
-new minify.minify({
+/*
+compressor.minify({
     type: 'uglifyjs',
     fileIn: 'carota-debug.js',
     fileOut: 'carota-min.js',
@@ -19,3 +20,4 @@ new minify.minify({
         }
     }
 });
+*/

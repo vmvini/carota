@@ -46,12 +46,14 @@ exports.create = function(element) {
         textAreaContent = '',
         richClipboard = null,
         plainClipboard = null;
-    
+
     var toggles = {
         66: 'bold',
         73: 'italic',
         85: 'underline',
+        72: 'highlight',
         83: 'strikeout'
+
     };
 
     var exhausted = function(ordinal, direction) {
@@ -286,7 +288,7 @@ exports.create = function(element) {
     });
 
     var verticalAlignment = 'top';
-    
+
     doc.setVerticalAlignment = function(va) {
         verticalAlignment = va;
         paint();
@@ -294,7 +296,7 @@ exports.create = function(element) {
 
     function getVerticalOffset() {
         var docHeight = doc.frame.bounds().h;
-        if (docHeight < element.clientHeight) { 
+        if (docHeight < element.clientHeight) {
             switch (verticalAlignment) {
                 case 'middle':
                     return (element.clientHeight - docHeight) / 2;
@@ -315,15 +317,15 @@ exports.create = function(element) {
         var docHeight = doc.frame.bounds().h;
 
         var dpr = Math.max(1, window.devicePixelRatio || 1);
-        
+
         var logicalWidth = Math.max(doc.frame.actualWidth(), element.clientWidth),
             logicalHeight = element.clientHeight;
-        
+
         canvas.width = dpr * logicalWidth;
         canvas.height = dpr * logicalHeight;
         canvas.style.width = logicalWidth + 'px';
         canvas.style.height = logicalHeight + 'px';
-        
+
         canvas.style.top = element.scrollTop + 'px';
         spacer.style.width = logicalWidth + 'px';
         spacer.style.height = Math.max(docHeight, element.clientHeight) + 'px';
@@ -340,7 +342,7 @@ exports.create = function(element) {
 
         ctx.clearRect(0, 0, logicalWidth, logicalHeight);
         ctx.translate(0, getVerticalOffset() - element.scrollTop);
-        
+
         doc.draw(ctx, rect(0, element.scrollTop, logicalWidth, logicalHeight));
         doc.drawSelection(ctx, selectDragStart || (document.activeElement === textArea));
     };

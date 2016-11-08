@@ -100,6 +100,7 @@
         <label><input type="checkbox" id="bold"><strong>B</strong></label>
         <label><input type="checkbox" id="italic"><em>i</em></label>
         <label><input type="checkbox" id="underline"><u>u</u></label>
+        <label><input type="checkbox" id="highlight"><u>h</u></label>
         <label><input type="checkbox" id="strikeout"><strike>s</strike></label>
         <select id="align">
             <option value="left">Left</option>
@@ -302,33 +303,6 @@
         var elem = document.querySelector('#exampleEditor');
         var exampleEditor = carota.editor.create(elem);
 
-        // Set up our custom inline - a smiley emoji
-        var smiley = document.querySelector('#smiley img');
-
-        exampleEditor.customCodes = function(obj) {
-            if (obj.smiley) {
-                // Must return an object that encapsulates the inline
-                return {
-                    // measure: must return width, ascent and descent
-                    measure: function(/*formatting*/) {
-                        return {
-                            width: 24,
-                            ascent: 24,
-                            descent: 0
-                        };
-                    },
-                    // draw: implements the appearance of the inline on canvas
-                    draw: function(ctx, x, y, width, ascent, descent, formatting) {
-                        ctx.drawImage(smiley, x, y - ascent, width, ascent);
-                    }
-                }
-            }
-        };
-
-        // Setting up the button so user can insert a smiley
-        carota.dom.handleEvent(document.querySelector('#smiley'), 'click', function() {
-            exampleEditor.insert({ smiley: true });
-        });
 
         // Wire up undo/redo commands
         var undo = document.querySelector('#undo'),
@@ -348,7 +322,7 @@
         };
 
         // Wire up the toolbar controls
-        ['font', 'size', 'bold', 'italic', 'underline',
+        ['font', 'size', 'bold', 'italic', 'underline', 'highlight',
          'strikeout', 'align', 'script', 'color'].forEach(function(id) {
             var elem = document.querySelector('#' + id);
 
@@ -380,78 +354,7 @@
         carota.dom.handleEvent(valign, 'change', function() {
             exampleEditor.setVerticalAlignment(valign.value);
         });
-        
-        // We don't update the JSON view until half a second after the last change
-        // to avoid slowing things down too much
-        var persistenceTextArea = document.querySelector('#examplePersistence textarea');
-        var updateTimer = null;
-        var updatePersistenceView = function() {
-            if (updateTimer !== null) {
-                clearTimeout(updateTimer);
-            }
-            updateTimer = setTimeout(function() {
-                updateTimer = null;
-                persistenceTextArea.value = JSON.stringify(exampleEditor.save(), null, 4);
-            }, 500);
-        };
 
-        var manuallyChangingJson = 0;
-        carota.dom.handleEvent(persistenceTextArea, 'input', function() {
-            try {
-                manuallyChangingJson++;
-                exampleEditor.load(JSON.parse(persistenceTextArea.value), false);
-            } catch (x)  {
-                // ignore if syntax errors
-            } finally {
-                manuallyChangingJson--;
-            }
-        });
-
-        // Whenever the document changes, re-display the JSON format and update undo buttons
-        exampleEditor.contentChanged(function() {
-            updateUndo();
-            if (!manuallyChangingJson) {
-                updatePersistenceView();
-            }
-        });
-
-        // Load one of the hidden chunks of HTML
-        var load = function(selector) {
-            var html = document.querySelector(selector);
-            if (html) {
-                var runs = carota.html.parse(html, {
-                    carota: { color: 'orange', bold: true, size: 14 }
-                });
-                exampleEditor.load(runs);
-            }
-        };
-
-        // Set up the page links so they call load
-        var pageLinks = document.querySelectorAll('#pageLinks a');
-        for (var n = 0; n < pageLinks.length; n++) {
-            (function() {
-                var pageLink = pageLinks[n];
-                var ref = pageLink.attributes['href'].value;
-                if (ref[0] === '#') {
-                    carota.dom.handleEvent(pageLink, 'click', function() {
-                        load(ref);
-                        return false;
-                    });
-                }
-            })();
-        }
-
-        load('#welcome');
-        /*exampleEditor.load([
-            { text: 'A' },
-            { text: { $: 'listStart' }, color: 'blue' },
-            { text: 'B' },
-            { text: { $: 'listNext' }, color: 'red' },
-            { text: 'C' },
-            { text: { $: 'listEnd' } },
-            { text: 'D' }
-        ]);
-          */
     };
     </script>
 </body>

@@ -1,4 +1,4 @@
-exports.formattingKeys = [ 'bold', 'italic', 'underline', 'strikeout', 'color', 'font', 'size', 'align', 'script' ];
+exports.formattingKeys = [ 'bold', 'italic', 'underline', 'highlight', 'strikeout', 'color', 'font', 'size', 'align', 'script' ];
 
 exports.defaultFormatting = {
     size: 10,
@@ -7,6 +7,7 @@ exports.defaultFormatting = {
     bold: false,
     italic: false,
     underline: false,
+    highlight: false,
     strikeout: false,
     align: 'left',
     script: 'normal'
@@ -51,15 +52,24 @@ exports.merge = function(run1, run2) {
     return merged;
 };
 
+//if run is an array of objects with this schema {text String, attribute value}:
+//  for each object, call exports.format
 exports.format = function(run, template) {
     if (Array.isArray(run)) {
         run.forEach(function(r) {
             exports.format(r, template);
         });
     } else {
+        //run is an object of the array passed initially
         Object.keys(template).forEach(function(key) {
             if (template[key] !== exports.multipleValues) {
                 run[key] = template[key];
+                console.log(run);
+            }
+            else{
+              console.log("template[key] === exports.multipleValues");
+              console.log("template[key]", template[key]);
+              console.log("exports.multipleValues", exports.multipleValues);
             }
         });
     }
