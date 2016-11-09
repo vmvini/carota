@@ -161,7 +161,8 @@ exports.draw = function(ctx, str, formatting, left, baseline, width, ascent, des
     if (formatting.highlight) {
         ctx.save();
         ctx.fillStyle="#EDDE40";
-        ctx.globalAlpha=0.8;
+        ctx.globalCompositeOperation="destination-over";
+        //ctx.globalAlpha=0.8;
         ctx.fillRect(left, 1 + baseline - (ascent), width, textHeight(str, formatting));
         ctx.restore();
     }
